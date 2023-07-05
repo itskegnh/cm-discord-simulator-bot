@@ -170,7 +170,10 @@ class Stock:
         col_stocks.update_one({ '_id': self.id }, { '$set': self.to_dict() }, upsert=True)
 
     def get_value(self, timeframe=60*60*7):
-        return statistics.median([transaction.amount for transaction in self.transactions_after(time.time() - timeframe)])
+        transactions = self.transactions_after(time.time() - timeframe)
+        if len(transactions) <= 0:
+            return 150
+        return statistics.median([transaction.amount for transaction in transactions])
 
     def get_lastsale(self):
         if len(self.transactions) >= 1:
