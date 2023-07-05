@@ -155,7 +155,20 @@ class Stock:
         stocks = col_stocks.find()
         for stock in stocks:
             yield cls(stock["_id"], stock["name"], stock["emoji"], stock["owners"], stock["buy_orders"], stock["sell_offers"], stock["transactions"])
+    
 
+    @classmethod
+    def all_stocks_value(cls):
+        total_market_value = 0
+        for stock in Stock.all():
+            total_market_value += stock.total_value()
+        return total_market_value
+    
+    def total_value(self):
+        return self.get_value() * self.total_units
+
+    def market_share(self):
+        return self.total_value() / Stock.all_stocks_value()
 
     def to_dict(self):
         return {
@@ -325,8 +338,29 @@ class User:
     def add_gst(self, amount):
         return amount + amount / 10
     
+    def pay_dividends(self):
+        portfolio = self.portfolio()
+
+        DIVIDEND_POOL = col_market.find_one({ '_id': 'DIVIDEND_POOL' })['amount']
+
+        for stock, units in portfolio:
+            units = sum(units)
+
+            unit_dividend = (stock.market_share() * DIVIDEND_POOL) / units
+            user_dividend = unit_dividend * units
+
+            self.pixels += user_dividend
+
+            #NEEEDS WORK
+
+
+
+
+            
+
+        self.update()
+    
     def append_tax_to_pool(self, tax):
-        print('ADDING TAX TO DIVIDEND_POOL', tax)
         col_market.update_one({ '_id': 'DIVIDEND_POOL' }, { '$inc': { 'amount': tax } }, upsert=True)
 
     def buy(self, stock, quantity, amount):
