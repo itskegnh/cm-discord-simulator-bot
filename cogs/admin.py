@@ -12,7 +12,7 @@ class AdminCog(commands.Cog):
         stocks = [Stock.load(stock)] if stock != 'ALL' else Stock.all()
 
         for stock in stocks:
-            offer = stock.OfferOrder(amount, quantity, MARKET)
+            offer = stock.OfferOrder(float(amount), int(quantity), MARKET)
             stock.sell_offers.append(offer)
             stock.update()
 
