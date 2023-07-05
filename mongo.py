@@ -17,11 +17,11 @@ from io import BytesIO
 from collections import defaultdict
 
 import time
+import os
 
-uri = "mongodb+srv://admin:3TyMflrlPKEhIl6D@cell-machine.zgafl2a.mongodb.net/?retryWrites=true&w=majority"
 
 # Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+client = MongoClient(os.getenv('URI'), server_api=ServerApi('1'))
 
 db = client['market']
 
