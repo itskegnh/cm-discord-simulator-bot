@@ -31,6 +31,9 @@ col_users  = db['users']
 STOCKS = [stock['_id'] for stock in col_stocks.find()]
 
 MARKET = "1125298940200366080"
+BOOST_REWARD = 500
+GUILD_ID = 791818283867045941
+BOOST_CHANNEL = 983204285712064593
 
 # col_stocks.update_one({ '_id': 'MOV' }, { '$unset': { 'buy_orders': '' } })
 # col_stocks.update_one({ '_id': 'MOV' }, { '$unset': { 'sell_offers': '' } })
@@ -258,30 +261,33 @@ class Stock:
         return image_stream
 
 class User:
-    def __init__(self, _id, pixels):
+    def __init__(self, _id, pixels, recieved_reward):
         self.id = _id
         self.pixels = pixels
+        self.recieved_reward = recieved_reward
     
     @classmethod
     def load(cls, _id):
         _id = str(_id)
         user = col_users.find_one({ '_id': _id })
         if not user:
-            user = { '_id': _id, 'pixels': 500 }
+            pixels = 500
+            user = { '_id': _id, 'pixels': pixels, 'recieved_reward': False }
             col_users.insert_one(user)
-        return cls(user["_id"], user["pixels"])
+        return cls(user["_id"], user["pixels"], user["recieved_reward"])
     
     @classmethod
     def all(cls):
         users = col_users.find()
         for user in users:
             if user["_id"] == MARKET: continue
-            yield cls(user["_id"], user["pixels"])
+            yield cls(user["_id"], user["pixels"], user["recieved_reward"])
 
     def to_dict(self):
         return {
             "_id": self.id,
-            "pixels": self.pixels
+            "pixels": self.pixels,
+            "recieved_reward": self.recieved_reward
         }
     
     def update(self):
