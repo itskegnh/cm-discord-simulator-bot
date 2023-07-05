@@ -326,6 +326,7 @@ class User:
         return amount + amount / 10
     
     def append_tax_to_pool(self, tax):
+        print('ADDING TAX TO DIVIDEND_POOL', tax)
         col_market.update_one({ '_id': 'DIVIDEND_POOL' }, { '$inc': { 'amount': tax } }, upsert=True)
 
     def buy(self, stock, quantity, amount):
@@ -389,7 +390,7 @@ class User:
             tax_amount = self.gst(amount * quantity)
             self.pixels -= tax_amount
             self.append_tax_to_pool(tax_amount)
-            
+
             stock.buy_orders.append(order)
 
             embeds.append((disnake.Embed(
