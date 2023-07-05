@@ -1,0 +1,15 @@
+{
+    "_id": "NMY",
+    "name": "Enemy",
+    "emoji": "<:NMY:1125382795724849234>",
+    "owners": {
+        "market": 10
+    },
+    "buy_orders": [
+    ],
+    "sell_offers": [
+    ],
+    "history": {
+    },
+    "last_sale": null
+}
