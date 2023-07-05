@@ -7,12 +7,12 @@ class BoostCog(commands.Cog):
     @commands.Cog.listener(name='on_message')
     async def on_boost(self, message : disnake.Message):
         if message.channel.id != BOOST_CHANNEL: return
-        # if not (message.type in [
-        #     disnake.MessageType.premium_guild_subscription,
-        #     disnake.MessageType.premium_guild_tier_1,
-        #     disnake.MessageType.premium_guild_tier_2,
-        #     disnake.MessageType.premium_guild_tier_3,
-        # ]): return
+        if not (message.type in [
+            disnake.MessageType.premium_guild_subscription,
+            disnake.MessageType.premium_guild_tier_1,
+            disnake.MessageType.premium_guild_tier_2,
+            disnake.MessageType.premium_guild_tier_3,
+        ]): return
 
         user = User.load(message.author.id)
         user.pixels += BOOST_REWARD
