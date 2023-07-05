@@ -141,6 +141,7 @@ class Stock:
         self.transactions = sorted([self.Transaction.load(transaction) for transaction in transactions], key=lambda t: t.timestamp, reverse=True)
 
         self.image = disnake.File(f'cells/{_id}.png')
+        self._total_units = None
     
     @classmethod
     def load(cls, _id):
@@ -176,11 +177,21 @@ class Stock:
             return 150
         
         individual_transactions = []
-        for transaction in transaction:
+        for transaction in transactions:
             for unit in range(transaction.quantity):
                 individual_transactions.append(transaction.amount)
         
         return statistics.median(individual_transactions)
+    
+    @property
+    def total_units(self):
+        if self._total_units is None:
+            self._total_units = 0
+            for amount in self.owners.values():
+                self._total_units += amount
+            for sell_offer in self.sell_offers:
+                self._total_units += sell_offer.quantity
+        return self._total_units
 
     def get_lastsale(self):
         if len(self.transactions) >= 1:
