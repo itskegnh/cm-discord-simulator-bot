@@ -14,6 +14,7 @@ class AdminCog(commands.Cog):
         for stock in stocks:
             offer = stock.OfferOrder(amount, quantity, MARKET)
             stock.sell_offers.append(offer)
+            stock.update()
 
         await ctx.reply(f'Issued stocks.')
 
