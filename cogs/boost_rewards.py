@@ -1,11 +1,5 @@
 from mongo import *
 
-# sort methods:
-#  • net worth
-#  • pixels
-#  • cells owned
-#  • 
-
 class BoostCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
