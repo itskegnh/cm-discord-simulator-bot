@@ -29,6 +29,7 @@ db = client['market']
 
 col_stocks = db['stocks']
 col_users  = db['users']
+col_market = db['market']
 
 STOCKS = [stock['_id'] for stock in col_stocks.find()]
 
@@ -173,7 +174,13 @@ class Stock:
         transactions = self.transactions_after(time.time() - timeframe)
         if len(transactions) <= 0:
             return 150
-        return statistics.median([transaction.amount for transaction in transactions])
+        
+        individual_transactions = []
+        for transaction in transaction:
+            for unit in range(transaction.quantity):
+                individual_transactions.append(transaction.amount)
+        
+        return statistics.median(individual_transactions)
 
     def get_lastsale(self):
         if len(self.transactions) >= 1:
@@ -306,6 +313,9 @@ class User:
     
     def add_gst(self, amount):
         return amount + amount / 10
+    
+    # def append_tax(self, tax):
+        # col_market.find_one
 
     def buy(self, stock, quantity, amount):
         if type(stock) == str: stock = Stock.load(stock)
