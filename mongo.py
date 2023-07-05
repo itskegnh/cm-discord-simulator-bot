@@ -19,6 +19,8 @@ from collections import defaultdict
 import time
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
 
 # Create a new client and connect to the server
 client = MongoClient(os.getenv('URI'), server_api=ServerApi('1'))
