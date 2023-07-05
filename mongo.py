@@ -270,6 +270,9 @@ class User:
         self.id = _id
         self.pixels = pixels
         self.recieved_reward = recieved_reward
+
+        self._spent_pixels = None
+        self._net_worth = None
     
     @classmethod
     def load(cls, _id):
@@ -455,14 +458,26 @@ class User:
             if units_owned + units_for_sale > 0:
                 yield stock, (units_owned, units_for_sale)
     
+    @property
     def spent_pixels(self):
-        pixels_spent = 0
-        for stock in Stock.all():
-            for buy_order in stock.buy_orders:
-                if buy_order.user == self.id:
-                    pixels_spent += buy_order.amount * buy_order.quantity
-        self._spent_pixels = pixels_spent
-        return pixels_spent
+        if self._spent_pixels is None:
+            pixels_spent = 0
+            for stock in Stock.all():
+                for buy_order in stock.buy_orders:
+                    if buy_order.user == self.id:
+                        pixels_spent += buy_order.amount * buy_order.quantity
+            self._spent_pixels = pixels_spent
+        return self._spent_pixels
+    
+    @property
+    def net_worth(self):
+        if self._net_worth is None:
+            self._net_worth = 0
+            self._net_worth += self.pixels
+            self._net_worth += self.spent_pixels
+            for stock, (units_owned, units_for_sale) in self.portfolio():
+                self._net_worth += stock.get_value() * (units_owned + units_for_sale)
+        return self._net_worth
     
     def cancel_all(self):
         for stock in Stock.all():

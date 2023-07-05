@@ -17,24 +17,21 @@ class PortfolioCog(commands.Cog):
         ).set_thumbnail(user.avatar.url)
 
         user = User.load(user.id)
-        spent_pixels = user.spent_pixels()
+        user.spent_pixels
 
-        embed.description += f'Pixels: `${millify(user.pixels)}`' + (f' (`+${millify(spent_pixels)}`)' if spent_pixels > 0 else '')
-
-        net_worth = user.pixels + spent_pixels
+        embed.description += f'Pixels: `${millify(user.pixels)}`' + (f' (`+${millify(user.spent_pixels)}`)' if user.spent_pixels > 0 else '')
 
         for stock, (units_owned, units_for_sale) in user.portfolio():
             value = f'> **Units:** `{millify(units_owned)}`' + (f' (`+{millify(units_for_sale)}`)' if units_for_sale > 0 else '')
             value += f'\n> **Value:** `${millify(stock.get_value() * units_owned)}`'
-            net_worth += stock.get_value() * (units_owned + units_for_sale)
-
+            
             embed.add_field(
                 name = f'{stock.emoji} `{stock.id}`',
                 value = value,
                 inline = True,
             )
 
-        embed.set_footer(text=f'Net Worth: ${millify(net_worth)}')
+        embed.set_footer(text=f'Net Worth: ${millify(user.net_worth)}')
         # embed.set_image(file=disnake.File(stock.plot_sales_after(time.time() - 60*60*24*2), 'graph.png'))
 
         await inter.followup.send(embed=embed)

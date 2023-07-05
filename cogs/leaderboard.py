@@ -15,7 +15,7 @@ class LeaderboardCog(commands.Cog):
         await inter.response.defer(with_message=True)
 
         users = list(User.all())
-        users = sorted(users, key=lambda u: u.pixels + u.spent_pixels(), reverse=True)
+        users = sorted(users, key=lambda u: u.net_worth, reverse=True)
         
         embed = disnake.Embed(
             title = f'Leaderboard',
@@ -26,7 +26,7 @@ class LeaderboardCog(commands.Cog):
         pos = -1
         for i, user in enumerate(users):
             if i < 10:
-                embed.description += f'\n**{i+1}.** <@{user.id}> `${millify(user.pixels)}`' + (f' (`+${millify(user._spent_pixels)}`)' if user._spent_pixels > 0 else '')
+                embed.description += f'\n**{i+1}.** <@{user.id}> `${millify(user.net_worth)}`'
 
             if user.id == str(inter.user.id):
                 pos = i
