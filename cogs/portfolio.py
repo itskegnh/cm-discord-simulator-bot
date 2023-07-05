@@ -23,7 +23,7 @@ class PortfolioCog(commands.Cog):
 
         for stock, (units_owned, units_for_sale) in user.portfolio():
             value = f'> **Units:** `{millify(units_owned)}`' + (f' (`+{millify(units_for_sale)}`)' if units_for_sale > 0 else '')
-            value += f'\n> **Value:** `${millify(stock.get_value() * units_owned)}`'
+            value += f'\n> **Value:** `${millify(stock.get_value() * (units_owned + units_for_sale))}`'
             
             embed.add_field(
                 name = f'{stock.emoji} `{stock.id}`',
