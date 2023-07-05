@@ -325,8 +325,8 @@ class User:
     def add_gst(self, amount):
         return amount + amount / 10
     
-    # def append_tax(self, tax):
-        # col_market.find_one
+    def append_tax_to_pool(self, tax):
+        col_market.update_one({ '_id': 'DIVIDEND_POOL' }, { '$inc': { 'amount': tax } }, upsert=True)
 
     def buy(self, stock, quantity, amount):
         if type(stock) == str: stock = Stock.load(stock)
@@ -355,7 +355,11 @@ class User:
                 sell_offers.pop(0)
                 transaction = stock.Transaction(self.id, offerer.id, offer.amount, offer.quantity)
                 self.pixels -= offer.amount * offer.quantity
-                self.pixels -= self.gst(offer.amount * offer.quantity)
+
+                tax_amount = self.gst(offer.amount * offer.quantity)
+                self.pixels -= tax_amount
+                self.append_tax_to_pool(tax_amount)
+                
                 offerer.pixels += offer.amount * offer.quantity
                 quantity -= offer.quantity
 
@@ -381,7 +385,11 @@ class User:
             # Place Buy Order
             order = stock.OfferOrder(amount, quantity, self.id)
             self.pixels -= amount * quantity
-            self.pixels -= self.gst(amount * quantity)
+
+            tax_amount = self.gst(amount * quantity)
+            self.pixels -= tax_amount
+            self.append_tax_to_pool(tax_amount)
+            
             stock.buy_orders.append(order)
 
             embeds.append((disnake.Embed(
