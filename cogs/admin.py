@@ -24,7 +24,7 @@ class AdminCog(commands.Cog):
         col_stocks.update_many({}, { '$set': { 'transactions': [] }})
         col_users.delete_many({})
     
-    @commands.Cog.listner(name='on_ready')
+    @commands.Cog.listener(name='on_ready')
     async def on_ready(self):
         await self.bot.fetch_user(529785952982532117).send('BOT IS ONLINE!')
 
