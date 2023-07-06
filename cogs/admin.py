@@ -20,6 +20,7 @@ class AdminCog(commands.Cog):
     
     @commands.command(name='resetmarket')
     async def resetalluserdata(self, ctx : commands.Context, quantity = 10, amount = 150):
+        if ctx.author.id != 529785952982532117: return
         col_stocks.update_many({}, { '$set': { 'owners': [], 'sell_offers': [{ 'amount': amount, 'quantity': quantity, 'user': MARKET }], 'buy_orders': [] } })
         col_stocks.update_many({}, { '$set': { 'transactions': [] }})
         col_users.delete_many({})
@@ -30,6 +31,7 @@ class AdminCog(commands.Cog):
     
     @commands.command(name='market_pie')
     async def market_pie(self, ctx : commands.Context):
+        if ctx.author.id != 529785952982532117: return
         stocks = Stock.all()
 
         # Calculate the total value of all stocks
