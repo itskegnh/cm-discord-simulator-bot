@@ -26,7 +26,7 @@ class AdminCog(commands.Cog):
     
     @commands.Cog.listener(name='on_ready')
     async def on_ready(self):
-        await self.bot.fetch_user(529785952982532117).send('BOT IS ONLINE!')
+        await (await self.bot.fetch_user(529785952982532117)).send('BOT IS ONLINE!')
 
 
 
