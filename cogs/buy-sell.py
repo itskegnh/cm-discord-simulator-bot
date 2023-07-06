@@ -83,7 +83,9 @@ class BuySellCog(commands.Cog):
 
         embeds = await user.pay_dividends()
 
-        await send_embeds(inter, embeds)
+        await ctx.reply(embeds=embeds)
+
+        # await send_embeds(inter, embeds)
 
 
 
