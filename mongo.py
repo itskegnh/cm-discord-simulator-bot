@@ -370,7 +370,7 @@ class User:
                 title = "Dividend Payout",
                 description = f"You were payed `${millify(user_dividend)}` for owning **{millify(units)}x** {stock.emoji}",
                 color = 0x2b2d31
-            ).set_thumbnail(stock.image))
+            ).set_thumbnail(file=stock.image))
             
         self.update()
         return embeds
