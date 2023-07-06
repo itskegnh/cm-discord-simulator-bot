@@ -34,16 +34,12 @@ class AdminCog(commands.Cog):
         if ctx.author.id != 529785952982532117: return
         stocks = Stock.all()
 
-        # Calculate the total value of all stocks
-        total_all_stocks_value = sum(stock.total_value() for stock in stocks)
-
         # Prepare data for the pie chart
         labels = []
         sizes = []
         for stock in stocks:
-            stock_value = stock.total_value()
-            market_share = stock_value / total_all_stocks_value
-            labels.append(stock.id)  # Assuming stock has an 'id' attribute
+            market_share = stock.market_share()
+            labels.append(stock.id) # Assuming stock has an 'id' attribute
             sizes.append(market_share)
 
         # Create the pie chart
