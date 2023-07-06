@@ -35,17 +35,7 @@ class BuySellCog(commands.Cog):
         for embed, user_id in embeds:
             embed.set_thumbnail(self.bot.get_user(int(user_id)).avatar.url)
 
-        _t = False
-        while len(embeds) >= 1:
-            _embeds = [embed[0] for embed in embeds[:10]]
-            await (inter.followup.send(embeds=_embeds) if not _t else inter.channel.send(embeds=_embeds))
-            _t = True
-
-            if len(embeds) <= 10:
-                break
-                
-            for _ in range(10):
-                embeds.pop(0)
+        await send_embeds(inter, embeds)
     
     @commands.slash_command(name='sell', description='Sell a stock!', options=[
         disnake.Option(name='stock', description='The stock you want to offload.', type=disnake.OptionType.string, required=True, autocomplete=STOCKS),
@@ -74,17 +64,7 @@ class BuySellCog(commands.Cog):
         for embed, user_id in embeds:
             embed.set_thumbnail(self.bot.get_user(int(user_id)).avatar.url)
 
-        _t = False
-        while len(embeds) >= 1:
-            _embeds = [embed[0] for embed in embeds[:10]]
-            await (inter.followup.send(embeds=_embeds) if not _t else inter.channel.send(embeds=_embeds))
-            _t = True
-
-            if len(embeds) <= 10:
-                break
-                
-            for _ in range(10):
-                embeds.pop(0)
+        await send_embeds(inter, embeds)
         
     @commands.slash_command(name='cancel', description='Cancel all outgoing sell offers and buy orders.')
     async def cancel(self, inter : disnake.interactions.AppCmdInter):
@@ -94,6 +74,18 @@ class BuySellCog(commands.Cog):
         user.cancel_all()
 
         await inter.followup.send('You cancelled ALL outgoing sell offers and buy orders!')
+    
+    @commands.command(name='dividend')
+    async def dividend(self, ctx : disnake.Context):
+        if ctx.author.id != 529785952982532117: return
+
+        user = User.load(ctx.author.id)
+
+        embeds = await user.pay_dividends()
+
+        await send_embeds(inter, embeds)
+
+
 
 def setup(bot):
     bot.add_cog(BuySellCog(bot))

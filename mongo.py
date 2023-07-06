@@ -90,6 +90,19 @@ def millify(n):
 
 #     return '{:.0f}{}'.format(n / 10**(3 * millidx), millnames[millidx])
 
+async def send_embeds(interaction, embeds):
+    _t = False
+    while len(embeds) >= 1:
+        _embeds = [embed[0] for embed in embeds[:10]]
+        await (interaction.followup.send(embeds=_embeds) if not _t else interaction.channel.send(embeds=_embeds))
+        _t = True
+
+        if len(embeds) <= 10:
+            break
+            
+        for _ in range(10):
+            embeds.pop(0)
+
 class Stock:
     class OfferOrder:
         def __init__(self, amount, quantity, user):
@@ -343,6 +356,8 @@ class User:
 
         DIVIDEND_POOL = col_market.find_one({ '_id': 'DIVIDEND_POOL' })['amount']
 
+        embeds = []
+
         for stock, units in portfolio:
             units = sum(units)
 
@@ -351,14 +366,14 @@ class User:
 
             self.pixels += user_dividend
 
-            #NEEEDS WORK
-
-
-
-
+            embeds.append(disnake.Embed(
+                title = "Dividend Payout",
+                description = f"You were payed `${millify(user_dividend)}` for owning **{millify(units)}x** {stock.emoji}",
+                color = 0x2b2d31
+            ).set_thumbnail(stock.image))
             
-
         self.update()
+        return embeds
     
     def append_tax_to_pool(self, tax):
         col_market.update_one({ '_id': 'DIVIDEND_POOL' }, { '$inc': { 'amount': tax } }, upsert=True)
