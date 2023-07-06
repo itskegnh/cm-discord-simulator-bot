@@ -81,7 +81,7 @@ class BuySellCog(commands.Cog):
 
         user = User.load(ctx.author.id)
 
-        embeds = await user.pay_dividends()
+        embeds = user.pay_dividends()
 
         await ctx.reply(embeds=embeds)
 
