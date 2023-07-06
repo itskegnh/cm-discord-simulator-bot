@@ -27,6 +27,37 @@ class AdminCog(commands.Cog):
     @commands.Cog.listener(name='on_ready')
     async def on_ready(self):
         await (await self.bot.fetch_user(529785952982532117)).send('BOT IS ONLINE!')
+    
+    @commands.command(name='market_pie')
+    async def market_pie(self, ctx : commands.Context):
+        stocks = Stock.all()
+
+        # Calculate the total value of all stocks
+        total_all_stocks_value = sum(stock.total_value() for stock in stocks)
+
+        # Prepare data for the pie chart
+        labels = []
+        sizes = []
+        for stock in stocks:
+            stock_value = stock.total_value()
+            market_share = stock_value / total_all_stocks_value
+            labels.append(stock.id)  # Assuming stock has an 'id' attribute
+            sizes.append(market_share)
+
+        # Create the pie chart
+        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+        plt.axis('equal')  # Equal aspect ratio ensures a circular pie chart
+        plt.title('Market Share by Stock')
+
+        # Export the plot as an image
+        image_stream = BytesIO()
+        plt.savefig(image_stream, format='png')
+        image_stream.seek(0)
+
+        # Clear the plot for reuse
+        plt.clf()
+
+        await ctx.reply(file=disnake.File(image_stream))
 
 
 
