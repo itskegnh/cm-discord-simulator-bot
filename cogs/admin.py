@@ -59,7 +59,7 @@ class AdminCog(commands.Cog):
         # Clear the plot for reuse
         plt.clf()
 
-        await ctx.reply(file=disnake.File(image_stream))
+        await ctx.reply(file=disnake.File(image_stream, 'graph.png'))
 
 
 
