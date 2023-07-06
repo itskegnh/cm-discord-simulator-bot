@@ -76,7 +76,7 @@ class BuySellCog(commands.Cog):
         await inter.followup.send('You cancelled ALL outgoing sell offers and buy orders!')
     
     @commands.command(name='dividend')
-    async def dividend(self, ctx : disnake.Context):
+    async def dividend(self, ctx : commands.Context):
         if ctx.author.id != 529785952982532117: return
 
         user = User.load(ctx.author.id)
