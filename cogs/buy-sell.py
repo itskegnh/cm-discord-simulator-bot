@@ -77,7 +77,7 @@ class BuySellCog(commands.Cog):
 
         await inter.followup.send('You cancelled ALL outgoing sell offers and buy orders!')
     
-    @tasks.loop(minutes=60)
+    @tasks.loop(seconds=5.0)
     async def dividend_loop(self):
         pool = col_market.find_one({ '_id': 'DIVIDEND_POOL' })
         if pool['payout']+(60*60*24) > time.time(): return
