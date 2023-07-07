@@ -10,7 +10,7 @@ class DividendCog(commands.Cog):
         pool = col_market.find_one({ '_id': 'DIVIDEND_POOL' })
         if pool['payout']+(60*60*24) > time.time(): return
         for user in User.all():
-            if user.id != "529785952982532117": continue
+            # if user.id != "529785952982532117": continue
             embeds = user.pay_dividends()
 
             if not user.dms: continue
