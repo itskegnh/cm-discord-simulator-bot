@@ -94,6 +94,7 @@ class BuySellCog(commands.Cog):
     
     @commands.command(name='dms-off')
     async def dms_off(self, ctx : commands.Context):
+        user = User.load(ctx.author.id)
         user.dms = False
         user.update()
 
@@ -101,6 +102,7 @@ class BuySellCog(commands.Cog):
 
     @commands.command(name='dms-on')
     async def dms_on(self, ctx : commands.Context):
+        user = User.load(ctx.author.id)
         user.dms = True
         user.update()
 
