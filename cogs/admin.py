@@ -32,20 +32,27 @@ class AdminCog(commands.Cog):
     @commands.command(name='market_pie')
     async def market_pie(self, ctx : commands.Context):
         if ctx.author.id != 529785952982532117: return
+        # Get the list of stocks
         stocks = Stock.all()
 
-        # Prepare data for the pie chart
-        labels = []
-        sizes = []
-        for stock in stocks:
-            market_share = stock.market_share()
-            labels.append(stock.id) # Assuming stock has an 'id' attribute
-            sizes.append(market_share)
 
-        # Create the pie chart
-        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-        plt.axis('equal')  # Equal aspect ratio ensures a circular pie chart
-        plt.title('Market Share by Stock')
+        # Calculate the market share for each stock and sort them in descending order
+        shares = [(stock.id, stock.total_value() / Stock.all_stocks_value()) for stock in stocks]
+        shares.sort(key=lambda x: x[1], reverse=True)
+
+        # Prepare data for the progress bar-style chart
+        labels = [share[0] for share in shares]
+        sizes = [share[1] for share in shares]
+
+        # Create the progress bar-style chart
+        fig, ax = plt.subplots()
+        ax.barh(range(len(labels)), sizes)
+
+        # Customize the appearance of the chart
+        ax.set_yticks(range(len(labels)))
+        ax.set_yticklabels(labels)
+        ax.set_xlabel('Market Share')
+        ax.set_title('Market Share by Stock')
 
         # Export the plot as an image
         image_stream = BytesIO()
