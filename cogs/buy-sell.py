@@ -38,7 +38,9 @@ class BuySellCog(commands.Cog):
         await send_embeds(inter, embeds)
     
     @commands.slash_command(name='sell', description='Sell a stock!', options=[
-        disnake.Option(name='stock', description='The stock you want to offload.', type=disnake.OptionType.string, required=True, autocomplete=STOCKS),
+        disnake.Option(name='stock', description='The stock you want to offload.', type=disnake.OptionType.string, required=True, choices=[
+            disnake.OptionChoice(name=stock, value=stock) for stock in STOCKS
+        ]),
         disnake.Option(name='quantity', description='Quantity of units to sell.', type=disnake.OptionType.integer, required=True, min_value=1),
         disnake.Option(name='amount', description='Minimum price per unit you are willing to sell at.', type=disnake.OptionType.integer, required=True, min_value=1)
     ])

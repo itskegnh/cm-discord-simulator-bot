@@ -5,7 +5,9 @@ class StockCog(commands.Cog):
         self.bot = bot
     
     @commands.slash_command(name='stock', description='Inspect a stock, or the whole market.', options=[
-        disnake.Option(name='stock', description='The stock to inspect - Leave blank to view all.', type=disnake.OptionType.string, required=False, autocomplete=True, )
+        disnake.Option(name='stock', description='The stock to inspect - Leave blank to view all.', type=disnake.OptionType.string, required=False, choices=[
+            disnake.OptionChoice(name=stock, value=stock) for stock in STOCKS
+        ])
     ])
     async def stock(self, inter : disnake.interactions.AppCmdInter, stock = None):
         if stock is None:
