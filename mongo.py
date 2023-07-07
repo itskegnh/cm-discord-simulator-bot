@@ -1,5 +1,5 @@
 import disnake
-from disnake.ext import commands
+from disnake.ext import commands, tasks
 
 from datetime import datetime
 
@@ -310,13 +310,14 @@ class Stock:
         return image_stream
 
 class User:
-    def __init__(self, _id, pixels, recieved_reward):
+    def __init__(self, _id, pixels, recieved_reward, dms):
         self.id = _id
         self.pixels = pixels
         self.recieved_reward = recieved_reward
 
         self._spent_pixels = None
         self._net_worth = None
+        self.dms = dms
     
     @classmethod
     def load(cls, _id):
@@ -326,20 +327,21 @@ class User:
             pixels = 500
             user = { '_id': _id, 'pixels': pixels, 'recieved_reward': False }
             col_users.insert_one(user)
-        return cls(user["_id"], user["pixels"], user["recieved_reward"])
+        return cls(user["_id"], user["pixels"], user["recieved_reward"], user.get('DMs', True))
     
     @classmethod
     def all(cls):
         users = col_users.find()
         for user in users:
             if user["_id"] == MARKET: continue
-            yield cls(user["_id"], user["pixels"], user["recieved_reward"])
+            yield cls(user["_id"], user["pixels"], user["recieved_reward"], user.get('DMs', True))
 
     def to_dict(self):
         return {
             "_id": self.id,
             "pixels": self.pixels,
-            "recieved_reward": self.recieved_reward
+            "recieved_reward": self.recieved_reward,
+            "DMs": self.dms
         }
     
     def update(self):
