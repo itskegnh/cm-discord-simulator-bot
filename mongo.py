@@ -207,7 +207,7 @@ class Stock:
             for unit in range(transaction.quantity):
                 individual_transactions.append(transaction.amount)
         
-        return statistics.median(individual_transactions)
+        return statistics.mean(individual_transactions)
     
     @property
     def total_units(self):
