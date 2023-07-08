@@ -14,7 +14,11 @@ class PortfolioCog(commands.Cog):
             title = f'{user}\'s Portfolio',
             description = '',
             color = 0x2b2d31
-        ).set_thumbnail((user.avatar or user.default_avatar).url)
+        )
+        if user.avatar:
+            embed.set_thumbnail(user.avatar.url)
+        else:
+            embed.set_thumbnail(user.default_avatar.url)
 
         user = User.load(user.id)
         user.spent_pixels

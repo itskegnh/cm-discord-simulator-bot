@@ -33,7 +33,11 @@ class LeaderboardCog(commands.Cog):
 
         embed.set_thumbnail(url=self.bot.user.avatar.url)
 
-        embed.set_footer(text=f'You are at position #{pos+1}.', icon_url=(inter.user.avatar or inter.user.default_avatar).url)
+        if inter.user.avatar:
+            embed.set_footer(text=f'You are at position #{pos+1}.', icon_url=inter.user.avatar.url)
+        else:
+            embed.set_footer(text=f'You are at position #{pos+1}.', icon_url=inter.user.default_avatar.url)
+            
 
         await inter.followup.send(embed=embed)
             
