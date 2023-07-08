@@ -15,10 +15,12 @@ class DividendCog(commands.Cog):
 
             if not user.dms: continue
             if len(embeds) <= 0: continue
-            
-            _user = await self.bot.fetch_user(int(user.id))
-            await _user.send(embeds=embeds)
-            await _user.send('If you would like to not recieve DMs, please use !dms-off')
+
+            try:
+                _user = await self.bot.fetch_user(int(user.id))
+                await _user.send(embeds=embeds)
+                await _user.send('If you would like to not recieve DMs, please use !dms-off')
+            except Exception: ...
         
         col_market.update_one({ '_id': 'DIVIDEND_POOL' }, { '$set': { 'amount': 0, 'payout': int(time.time()) } })
     
