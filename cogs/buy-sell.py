@@ -33,7 +33,11 @@ class BuySellCog(commands.Cog):
         embeds = user.buy(stock, quantity, amount)
         
         for embed, user_id in embeds:
-            embed.set_thumbnail(self.bot.get_user(int(user_id)).avatar.url)
+            _user = await self.bot.fetch_user(int(user_id))
+            if _user.avatar:
+                embed.set_thumbnail(url=_user.avatar.url)
+            else:
+                embed.set_thumbnail(url=_user.default_avatar.url)
 
         await send_embeds(inter, embeds)
     
@@ -64,7 +68,11 @@ class BuySellCog(commands.Cog):
         embeds = user.sell(stock, quantity, amount)
         
         for embed, user_id in embeds:
-            embed.set_thumbnail(self.bot.get_user(int(user_id)).avatar.url)
+            _user = await self.bot.fetch_user(int(user_id))
+            if _user.avatar:
+                embed.set_thumbnail(url=_user.avatar.url)
+            else:
+                embed.set_thumbnail(url=_user.default_avatar.url)
 
         await send_embeds(inter, embeds)
         
