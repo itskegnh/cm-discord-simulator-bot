@@ -370,7 +370,7 @@ class User:
 
             embeds.append(disnake.Embed(
                 title = "Dividend Payout",
-                description = f"You were payed `${millify(user_dividend)}` for owning **{millify(units)}x** {stock.emoji}",
+                description = f"You were paid `${millify(user_dividend)}` for owning **{millify(units)}x** {stock.emoji}",
                 color = 0x2b2d31
             ).set_thumbnail(file=stock.image))
             
