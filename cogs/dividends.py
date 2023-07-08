@@ -14,6 +14,8 @@ class DividendCog(commands.Cog):
             embeds = user.pay_dividends()
 
             if not user.dms: continue
+            if len(embeds) <= 0: continue
+            
             _user = await self.bot.fetch_user(int(user.id))
             await _user.send(embeds=embeds)
             await _user.send('If you would like to not recieve DMs, please use !dms-off')
