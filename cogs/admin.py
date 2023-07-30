@@ -1,61 +1,42 @@
-from mongo import *
+import disnake
+from disnake.ext import commands
+import cellmachine as cm
+import io
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    # !issue mov 1 150
-    @commands.command(name='issue')
-    async def issue(self, ctx : commands.Context, stock, quantity, amount):
-        if ctx.author.id != 529785952982532117: return
+    @commands.slash_command(name='simulate')
+    async def _simulate(self, inter : disnake.CommandInteraction, level : str, ticks : int, speed : bool = False):
+        await inter.response.defer(with_message=True)
+        try:
+            level : cm.Level = cm.levelstring.import_level(level)
+        except Exception as e:
+            return await inter.followup.send('Failed to parse levelstring.')
 
-        stocks = [Stock.load(stock)] if stock != 'ALL' else Stock.all()
+        # limits
 
-        for stock in stocks:
-            offer = stock.OfferOrder(float(amount), int(quantity), MARKET)
-            stock.sell_offers.append(offer)
-            stock.update()
+        images = []
+        for i in range(ticks+1):
+            image = level.preview()
+            level.tick()
+        
+            images.append(image)
+        
+        gif_bytes = io.BytesIO()
+        images[0].save(
+            gif_bytes,
+            format='GIF',
+            append_images=images[1:],
+            save_all=True,
+            duration=1 if speed else 200,  # Duration between frames in milliseconds (adjust as needed)
+            loop=0  # Set loop=0 for infinite loop, or any other number for a finite loop
+        )
+        gif_bytes.seek(0)
+        
+        await inter.followup.send(file=disnake.File(gif_bytes, filename='simulation.gif'))
 
-        await ctx.reply(f'Issued stocks.')
-    
-    @commands.command(name='resetmarket')
-    async def resetalluserdata(self, ctx : commands.Context, quantity = 10, amount = 150):
-        if ctx.author.id != 529785952982532117: return
-        col_stocks.update_many({}, { '$set': { 'owners': [], 'sell_offers': [{ 'amount': amount, 'quantity': quantity, 'user': MARKET }], 'buy_orders': [] } })
-        col_stocks.update_many({}, { '$set': { 'transactions': [] }})
-        col_users.delete_many({})
-    
-    @commands.Cog.listener(name='on_ready')
-    async def on_ready(self):
-        await (await self.bot.fetch_user(529785952982532117)).send('BOT IS ONLINE!')
-    
-    @commands.command(name='market_pie')
-    async def market_pie(self, ctx : commands.Context):
-        if ctx.author.id != 529785952982532117: return
-        stocks = Stock.all()
-
-        # Prepare data for the pie chart
-        labels = []
-        sizes = []
-        for stock in stocks:
-            market_share = stock.market_share()
-            labels.append(stock.id)
-            sizes.append(market_share)
-
-        # Create the pie chart
-        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-        plt.axis('equal')  # Equal aspect ratio ensures a circular pie chart
-        plt.title('Market Share by Stock')
-
-        # Export the plot as an image
-        image_stream = BytesIO()
-        plt.savefig(image_stream, format='png')
-        image_stream.seek(0)
-
-        # Clear the plot for reuse
-        plt.clf()
-
-        await ctx.reply(file=disnake.File(image_stream, 'graph.png'))
 
 
 

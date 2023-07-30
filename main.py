@@ -7,7 +7,7 @@ load_dotenv()
 
 # Create a new instance of the bot
 intents = disnake.Intents.all()
-bot = commands.Bot(command_prefix='!', intents=intents, activity=disnake.Activity(type=disnake.ActivityType.watching, name='the market.'), test_guilds=[1074838662879129650, 791818283867045941])
+bot = commands.Bot(command_prefix='!', intents=intents, activity=disnake.Activity(type=disnake.ActivityType.playing, name='cellmachine'), test_guilds=[1074838662879129650, 791818283867045941])
 
 # Load all cogs recursively
 def load_cogs(bot, path):
