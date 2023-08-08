@@ -22,16 +22,16 @@ class MainCog(commands.Cog):
         for i in range(ticks+1):
             image = level.preview()
 
-            # Check if the image has an alpha channel
             if image.mode == 'RGBA':
-                # Create a new image with the same size and 'RGB' mode and fill it with your color
+                # Create a solid background image with the desired color
                 background = Image.new('RGB', image.size, (25, 25, 25))
                 
-                # Alpha composite the original image onto the background
-                image = Image.alpha_composite(background, image.convert('RGBA'))
+                # Paste the original image on top of the background, using the alpha channel as a mask
+                background.paste(image, (0, 0), image)
+                
+                # Replace the original image with the new composite
+                image = background
 
-                # Optionally, you can convert the image back to RGB mode (removing the alpha channel)
-                image = image.convert('RGB')
 
             level.tick()
             
