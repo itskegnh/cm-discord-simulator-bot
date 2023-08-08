@@ -3,7 +3,7 @@ from disnake.ext import commands
 import cellmachine as cm
 import io
 
-class AdminCog(commands.Cog):
+class MainCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
@@ -20,7 +20,20 @@ class AdminCog(commands.Cog):
         images = []
         for i in range(ticks+1):
             image = level.preview()
+
+            # Check if the image has an alpha channel
+            if image.mode == 'RGBA':
+                # Create a new image with the same size and 'RGB' mode and fill it with your color
+                background = cm.Image.new('RGB', image.size, (25, 25, 25))
+                
+                # Alpha composite the original image onto the background
+                image = cm.Image.alpha_composite(background, image.convert('RGBA'))
+
+                # Optionally, you can convert the image back to RGB mode (removing the alpha channel)
+                image = image.convert('RGB')
+
             level.tick()
+            
         
             images.append(image)
         
@@ -39,7 +52,5 @@ class AdminCog(commands.Cog):
 
 
 
-
-
 def setup(bot):
-    bot.add_cog(AdminCog(bot))
+    bot.add_cog(MainCog(bot))
